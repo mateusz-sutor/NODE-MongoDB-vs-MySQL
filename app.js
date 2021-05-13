@@ -9,12 +9,14 @@ const mongoEntries = createMongoEntries(number_of_users, number_of_entries_by_us
 
 const getTime = (time) => {
   return text => {
-   return `${text} ${time[0]}s ${time[1] / 1_000_000}ms`;
+   return `${text} ${time[0]}s ${time[1] / 1_000_000}ms \n`;
   }
 }
 
 async function run() {
     try {
+
+      let text = "Results of test: \n";
 
       await Mongodb.connect();
 
@@ -23,7 +25,7 @@ async function run() {
       */
 
       const time0 = await Mongodb.insert(mongoEntries, getTime);
-      console.log(time0('Mongo insert huge collection time: '));
+      text += time0('Mongo insert huge collection time: ');
 
       /* ---------------- select---------------------------------
        * select latest entry
@@ -34,16 +36,16 @@ async function run() {
       const userID = 5;
 
       const time1 = await Mongodb.select(userID, 'latest', getTime);
-      console.log(time1('Mongo select latest time: '));
+      text += time1('Mongo select latest time: ');
 
       const time2 = await Mongodb.select(userID, '10latest', getTime);
-      console.log(time2('Mongo select 10 latest time: '));
+      text += time2('Mongo select 10 latest time: ');
 
       const time3 = await Mongodb.select(userID, 'allJune', getTime);
-      console.log(time3('Mongo select all from June time: '));
+      text += time3('Mongo select all from June time: ');
 
       const time4 = await Mongodb.select(userID, '10June', getTime);
-      console.log(time4('Mongo select 10 from June time: '));
+      text += time4('Mongo select 10 from June time: ');
 
       /* update
       * update one lastest - 10 days
@@ -57,16 +59,15 @@ async function run() {
       * insert 1 entry to collection
       */
 
-      return 'jejeje';
+      return text;
 
-    } catch (err) {
-        console.log("Error: " + err);
     } finally {
       // Ensures that the client will close when you finish/error
       await Mongodb.disconnect();
     }
 }
-run().then(res => {
-  console.log(res);
-});
+run().then(
+  result => console.log(result),
+  error => console.error("Error: " + error)
+);
 
