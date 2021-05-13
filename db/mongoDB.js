@@ -52,12 +52,31 @@ const MongoDB = class {
         }break;
         case '10latest': {
 
+            [result, timeEnd] = await this.#selectLatest(user_id, {
+                sort : {date: -1},
+                limit: 10
+            });
+
+
         }break;
         case 'latest':{
+
+            timeStart = process.hrtime();
+            result = await this.#collection.findOne({
+                _id_user: user_id,
+                }, {
+                sort : {date: -1}
+                });
+            timeEnd = process.hrtime(timeStart);
+            /*[result, timeEnd] = await this.#selectLatest(user_id, {
+                sort : {date: -1},
+                limit: 1
+            });*/
 
         }break;
       }
 
+      //console.log(result);
       return callback(timeEnd);
     }
 
@@ -73,6 +92,15 @@ const MongoDB = class {
         let result = await this.#collection.find(query, opt).toArray();
         const timeEnd = process.hrtime(timeStart);
        return [result, timeEnd];
+    }
+
+    async #selectLatest(user_id, opt = {}){
+        const timeStart = process.hrtime();
+        let result = await this.#collection.find({
+            _id_user: user_id,
+            }, opt).toArray();
+        const timeEnd = process.hrtime(timeStart);
+        return [result, timeEnd];
     }
 
     update(fields){

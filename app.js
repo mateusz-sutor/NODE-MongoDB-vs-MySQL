@@ -18,15 +18,12 @@ async function run() {
 
       await Mongodb.connect();
 
-
       /* ---------------- insert -------------------------------
       * insert prepared huge collection
-      * insert 1 entry to collection
-      * insert 10 entries to collection
       */
 
-      const time1 = await Mongodb.insert(mongoEntries, getTime);
-      console.log(time1('Mongo insert time: '));
+      const time0 = await Mongodb.insert(mongoEntries, getTime);
+      console.log(time0('Mongo insert huge collection time: '));
 
       /* ---------------- select---------------------------------
        * select latest entry
@@ -36,18 +33,29 @@ async function run() {
       */
       const userID = 5;
 
-      const time2 = await Mongodb.select(userID, 'allJune', getTime);
-      console.log(time2('Mongo select all from June time: '));
+      const time1 = await Mongodb.select(userID, 'latest', getTime);
+      console.log(time1('Mongo select latest time: '));
 
-      const time3 = await Mongodb.select(userID, '10June', getTime);
-      console.log(time3('Mongo select 10 from June time: '));
-      //update
+      const time2 = await Mongodb.select(userID, '10latest', getTime);
+      console.log(time2('Mongo select 10 latest time: '));
 
+      const time3 = await Mongodb.select(userID, 'allJune', getTime);
+      console.log(time3('Mongo select all from June time: '));
 
-      //delete
+      const time4 = await Mongodb.select(userID, '10June', getTime);
+      console.log(time4('Mongo select 10 from June time: '));
 
+      /* update
+      * update one lastest - 10 days
+      */
 
-      //insert
+      /* delete
+      * delete one lastest - 10 days
+      */
+
+      /* insert
+      * insert 1 entry to collection
+      */
 
       return 'jejeje';
 
