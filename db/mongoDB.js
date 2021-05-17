@@ -1,5 +1,6 @@
-const { MongoClient } = require("mongodb");
-
+const Mongo = require("mongodb");
+const MongoClient = Mongo.MongoClient;
+const ObjectID = Mongo.ObjectID;
 
 const MongoDB = class {
 
@@ -57,7 +58,6 @@ const MongoDB = class {
                 limit: 10
             });
 
-
         }break;
         case 'latest':{
 
@@ -103,8 +103,63 @@ const MongoDB = class {
         return [result, timeEnd];
     }
 
-    update(fields){
+    async insertOne(entry, callback){
+        const id = new ObjectID();
+        entry._id = id;
+        const timeStart = process.hrtime();
+        await this.#collection.insertOne(entry);
 
+        const timeEnd = process.hrtime(timeStart);
+        //console.log('ID: ' + id)
+        return {function: callback(timeEnd), id};
+    }
+
+    async update(user_id, callback){
+        const query = {
+            _id_user: user_id,
+            date: {
+                //delete one from June
+                $gte: new Date(2021,5),
+                $lt: new Date(2021,6),
+            }
+        };
+        const updateDoc = {
+            $set: {
+                mood: 'bad'
+            }
+        };
+        const timeStart = process.hrtime();
+
+        await this.#collection.updateOne(query, updateDoc, {
+            sort : {date: 1}
+        });
+
+        const timeEnd = process.hrtime(timeStart);
+        return callback(timeEnd);
+    }
+
+    async deleteOne(user_id, callback){
+        const query = {
+            _id_user: user_id,
+            date: {
+                //delete one from June
+                $gte: new Date(2021,5),
+                $lt: new Date(2021,6),
+            }
+        };
+        const timeStart = process.hrtime();
+
+        const result2 = await this.#collection.findOneAndDelete(query, {
+            sort : {date: -1}
+        });
+        //console.log(result2);
+
+        const timeEnd = process.hrtime(timeStart);
+        return callback(timeEnd);
+    }
+
+    async drop(){
+        await this.#collection.drop();
     }
 }
 

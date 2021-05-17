@@ -1,4 +1,12 @@
 
+const document = {
+    _id_user:  Date.now(),
+    date: new Date(2022,4,25),
+    title: 'Title',
+    description: 'What I did today?',
+    mood: 'good'
+};
+
 const createMongoEntries = (number_of_users, number_of_entries_by_user) => {
 
     //create basicEntires array
@@ -25,4 +33,4 @@ const createMongoEntries = (number_of_users, number_of_entries_by_user) => {
     return basicEntries;
 }
 
-module.exports = createMongoEntries;
+module.exports = {createMongoEntries, document};

@@ -2,9 +2,9 @@ const MongoDB = require('./db/mongoDB');
 const Mongodb = new MongoDB('mongodb://127.0.0.1:27017', 'mongo-test', 'entries');
 
 
-const createMongoEntries = require('./data/mongoEntries');
-const number_of_users = 10;
-const number_of_entries_by_user = 10;
+const {createMongoEntries, document: simpleEntry} = require('./data/mongoEntries');
+const number_of_users = 1000;
+const number_of_entries_by_user = 1000;
 const mongoEntries = createMongoEntries(number_of_users, number_of_entries_by_user);
 
 const getTime = (time) => {
@@ -47,17 +47,27 @@ async function run() {
       const time4 = await Mongodb.select(userID, '10June', getTime);
       text += time4('Mongo select 10 from June time: ');
 
-      /* update
-      * update one lastest - 10 days
-      */
-
-      /* delete
-      * delete one lastest - 10 days
-      */
-
       /* insert
       * insert 1 entry to collection
       */
+
+      const {function: time5, id} = await Mongodb.insertOne(simpleEntry, getTime);
+      text += time5('Mongo insert one time: ');
+
+      /* update
+      * update one first from June
+      */
+
+      const time6 = await Mongodb.update(userID, getTime);
+      text += time6('Mongo update one first from June time: ');
+
+      /* delete
+      * delete one latest from June
+      */
+      const time7 = await Mongodb.deleteOne(userID, getTime);
+      text += time7('Mongo delete one latest from June time: ');
+
+      await Mongodb.drop();
 
       return text;
 
