@@ -1,11 +1,15 @@
 const MongoDB = require('./db/mongoDB');
 const Mongodb = new MongoDB('mongodb://127.0.0.1:27017', 'mongo-test', 'entries');
 
+const MysqlDB = require('./db/mysqlDB');
+const Mysqldb = new MysqlDB('localhost', 'root', '', 'mysql-test', 'entries');
 
-const {createMongoEntries, document: simpleEntry} = require('./data/mongoEntries');
-const number_of_users = 1000;
+const {createEntries: createMongoEntries, document: simpleMongoEntry} = require('./data/mongoEntries');
+const {createEntries: createMysqlEntries, document: simpleMysqlEntry} = require('./data/mysqlEntries');
+const number_of_users = 100;
 const number_of_entries_by_user = 1000;
 const mongoEntries = createMongoEntries(number_of_users, number_of_entries_by_user);
+const mysqlEntries = createMysqlEntries(number_of_users, number_of_entries_by_user);
 
 const getTime = (time) => {
   return text => {
@@ -18,14 +22,18 @@ async function run() {
 
       let text = "Results of test: \n";
 
-      await Mongodb.connect();
+      //await Mongodb.connect();
+      await Mysqldb.connect();
 
-      /* ---------------- insert -------------------------------
+      /* ---------------- insert huge-------------------------------
       * insert prepared huge collection
       */
 
       const time0 = await Mongodb.insert(mongoEntries, getTime);
       text += time0('Mongo insert huge collection time: ');
+
+      const time00 = await Mysqldb.insert(mysqlEntries, getTime);
+      text += time00('Mysql insert huge collection time: ');
 
       /* ---------------- select---------------------------------
        * select latest entry
@@ -51,7 +59,7 @@ async function run() {
       * insert 1 entry to collection
       */
 
-      const {function: time5, id} = await Mongodb.insertOne(simpleEntry, getTime);
+      const {function: time5, id} = await Mongodb.insertOne(simpleMongoEntry, getTime);
       text += time5('Mongo insert one time: ');
 
       /* update
@@ -74,6 +82,7 @@ async function run() {
     } finally {
       // Ensures that the client will close when you finish/error
       await Mongodb.disconnect();
+      await Mysqldb.disconnect();
     }
 }
 run().then(

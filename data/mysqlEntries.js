@@ -1,10 +1,15 @@
+Date.prototype.toMysqlFormat = function() {
+    return this.toISOString().slice(0, 19).replace('T', ' ');
+};
 
 const document = {
-    _id_user:  Date.now(),
-    date: new Date(2022,4,25),
-    title: 'Title',
-    description: 'What I did today?',
-    mood: 'good'
+    user_id:  Date.now(),
+    date: new Date(2022,4,25).toMysqlFormat(),
+    content: {
+        title: 'Title',
+        description: 'What I did today?',
+        mood: 'good'
+    }
 };
 
 const createEntries = (number_of_users, number_of_entries_by_user) => {
@@ -18,11 +23,12 @@ const createEntries = (number_of_users, number_of_entries_by_user) => {
     for(let j = 0; j <number_of_users; j++){
 
         basicEntries.push({
-        _id_user: j,
-        date: new Date(date),
-        title: 'Title',
-        description: 'What I did today?',
-        mood: 'good'
+        user_id: j,
+        date: new Date(date).toMysqlFormat(),
+        content: {
+            title: 'Title',
+            description: 'What I did today?',
+            mood: 'good'}
         });
     }
     //add one day
