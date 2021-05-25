@@ -20,14 +20,67 @@ const getTime = (time) => {
 async function run() {
     try {
 
+      async function test_mongo(userID){
+
+        let text = '';
+
+        const time1 = await Mongodb.select(userID, 'latest', getTime);
+        text += time1('Mongo select latest time: ');
+
+        const time2 = await Mongodb.select(userID, '10latest', getTime);
+        text += time2('Mongo select 10 latest time: ');
+
+        const time3 = await Mongodb.select(userID, 'allJune', getTime);
+        text += time3('Mongo select all from June time: ');
+
+        const time4 = await Mongodb.select(userID, '10June', getTime);
+        text += time4('Mongo select 10 from June time: ');
+
+        const [time5, id] = await Mongodb.insertOne(simpleMongoEntry, getTime);
+        text += time5('Mongo insert one time: ');
+
+        const time6 = await Mongodb.update(id, getTime);
+        text += time6('Mongo update latest added time: ');
+
+        const time7 = await Mongodb.deleteOne(id, getTime);
+        text += time7('Mongo delete latest added time: ');
+
+        return text;
+
+      }
+
+      async function test_mysql(userID){
+
+        let text = '';
+
+        const time11 = await Mysqldb.select(userID, 'latest', getTime);
+        text += time11('Mysql select latest time: ');
+
+        const time22 = await Mysqldb.select(userID, '10latest', getTime);
+        text += time22('Mysql select 10 latest time: ');
+
+        const time33 = await Mysqldb.select(userID, 'allJune', getTime);
+        text += time33('Mysql select all from June time: ');
+
+        const time44 = await Mysqldb.select(userID, '10June', getTime);
+        text += time44('Mysql select 10 from June time: ');
+
+        const [time55, id] = await Mysqldb.insertOne(simpleMysqlEntry, getTime);
+        text += time55('Mysql insert one time: ');
+
+        const time66 = await Mysqldb.update(id, getTime);
+        text += time66('Mysql update latest added time: ');
+
+        const time77 = await Mysqldb.deleteOne(id, getTime);
+        text += time77('Mysql delete latest added time: ');
+
+        return text;
+      }
+
       let text = "Results of test: \n";
 
       await Mongodb.connect();
       await Mysqldb.connect();
-
-      /* ---------------- insert huge-------------------------------
-      * insert prepared huge collection
-      */
 
       const time0 = await Mongodb.insert(mongoEntries, getTime);
       text += time0('Mongo insert huge collection time: ');
@@ -35,64 +88,20 @@ async function run() {
       const time00 = await Mysqldb.insert(mysqlEntries, getTime);
       text += time00('Mysql insert huge collection time: ');
 
-      /* ---------------- select---------------------------------
-       * select latest entry
-       * select 10 latest entries
-       * select all entires from June
-       * select 10 entries from June
-      */
       const userID = 5;
 
-      const time1 = await Mongodb.select(userID, 'latest', getTime);
-      text += time1('Mongo select latest time: ');
+      text += await test_mongo(userID)
+      text += '================= \n';
+      text += await test_mysql(userID)
 
-      const time11 = await Mysqldb.select(userID, 'latest', getTime);
-      text += time11('Mysql select latest time: ');
+      await Mongodb.addDateIndex();
+      await Mysqldb.addDateIndex();
 
-      const time2 = await Mongodb.select(userID, '10latest', getTime);
-      text += time2('Mongo select 10 latest time: ');
+      text += '================= \n WITH INDEX \n================= \n';
+      text += await test_mongo(userID)
+      text += '================= \n';
+      text += await test_mysql(userID)
 
-      const time22 = await Mysqldb.select(userID, '10latest', getTime);
-      text += time22('Mysql select 10 latest time: ');
-
-      const time3 = await Mongodb.select(userID, 'allJune', getTime);
-      text += time3('Mongo select all from June time: ');
-
-      const time33 = await Mysqldb.select(userID, 'allJune', getTime);
-      text += time33('Mysql select all from June time: ');
-
-      const time4 = await Mongodb.select(userID, '10June', getTime);
-      text += time4('Mongo select 10 from June time: ');
-
-      const time44 = await Mysqldb.select(userID, '10June', getTime);
-      text += time44('Mysql select 10 from June time: ');
-
-      /* insert
-      * insert 1 entry to collection
-      */
-
-      const [time5, id1] = await Mongodb.insertOne(simpleMongoEntry, getTime);
-      text += time5('Mongo insert one time: ');
-
-      const [time55, id2] = await Mysqldb.insertOne(simpleMysqlEntry, getTime);
-      text += time55('Mysql insert one time: ');
-
-      /* update
-      * update latest added
-      */
-
-      const time6 = await Mongodb.update(id1, getTime);
-      text += time6('Mongo update latest added time: ');
-      const time66 = await Mysqldb.update(id2, getTime);
-      text += time66('Mysql update latest added time: ');
-
-      /* delete
-      * delete latest added
-      */
-      const time7 = await Mongodb.deleteOne(id1, getTime);
-      text += time7('Mongo latest added time: ');
-      const time77 = await Mysqldb.deleteOne(id2, getTime);
-      text += time77('Mysql latest added time: ');
 
       await Mongodb.drop();
       await Mysqldb.drop();

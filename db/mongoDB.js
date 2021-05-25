@@ -147,6 +147,10 @@ const MongoDB = class {
     async drop(){
         await this.#collection.drop();
     }
+
+    async addDateIndex(){
+        await this.#collection.createIndex( { date : -1 });
+    }
 }
 
 module.exports = MongoDB;

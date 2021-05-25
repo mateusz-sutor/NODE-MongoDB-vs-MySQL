@@ -126,6 +126,10 @@ const MysqlDB = class{
         await this.#connection.query(`drop table ${this.#tableName}`);
     }
 
+    async addDateIndex(){
+        await this.#connection.query(`create index date on ${this.#tableName}(date)`);
+    }
+
 }
 
 module.exports = MysqlDB;
