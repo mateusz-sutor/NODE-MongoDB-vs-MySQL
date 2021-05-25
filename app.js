@@ -6,8 +6,8 @@ const Mysqldb = new MysqlDB('localhost', 'root', '', 'mysql-test', 'entries');
 
 const {createEntries: createMongoEntries, document: simpleMongoEntry} = require('./data/mongoEntries');
 const {createEntries: createMysqlEntries, document: simpleMysqlEntry} = require('./data/mysqlEntries');
-const number_of_users = 100;
-const number_of_entries_by_user = 1000;
+const number_of_users = 10;
+const number_of_entries_by_user = 10;
 const mongoEntries = createMongoEntries(number_of_users, number_of_entries_by_user);
 const mysqlEntries = createMysqlEntries(number_of_users, number_of_entries_by_user);
 
@@ -22,7 +22,7 @@ async function run() {
 
       let text = "Results of test: \n";
 
-      //await Mongodb.connect();
+      await Mongodb.connect();
       await Mysqldb.connect();
 
       /* ---------------- insert huge-------------------------------
@@ -46,36 +46,56 @@ async function run() {
       const time1 = await Mongodb.select(userID, 'latest', getTime);
       text += time1('Mongo select latest time: ');
 
+      const time11 = await Mysqldb.select(userID, 'latest', getTime);
+      text += time11('Mysql select latest time: ');
+
       const time2 = await Mongodb.select(userID, '10latest', getTime);
       text += time2('Mongo select 10 latest time: ');
+
+      const time22 = await Mysqldb.select(userID, '10latest', getTime);
+      text += time22('Mysql select 10 latest time: ');
 
       const time3 = await Mongodb.select(userID, 'allJune', getTime);
       text += time3('Mongo select all from June time: ');
 
+      const time33 = await Mysqldb.select(userID, 'allJune', getTime);
+      text += time33('Mysql select all from June time: ');
+
       const time4 = await Mongodb.select(userID, '10June', getTime);
       text += time4('Mongo select 10 from June time: ');
+
+      const time44 = await Mysqldb.select(userID, '10June', getTime);
+      text += time44('Mysql select 10 from June time: ');
 
       /* insert
       * insert 1 entry to collection
       */
 
-      const {function: time5, id} = await Mongodb.insertOne(simpleMongoEntry, getTime);
+      const [time5, id1] = await Mongodb.insertOne(simpleMongoEntry, getTime);
       text += time5('Mongo insert one time: ');
 
+      const [time55, id2] = await Mysqldb.insertOne(simpleMysqlEntry, getTime);
+      text += time55('Mysql insert one time: ');
+
       /* update
-      * update one first from June
+      * update latest added
       */
 
-      const time6 = await Mongodb.update(userID, getTime);
-      text += time6('Mongo update one first from June time: ');
+      const time6 = await Mongodb.update(id1, getTime);
+      text += time6('Mongo update latest added time: ');
+      const time66 = await Mysqldb.update(id2, getTime);
+      text += time66('Mysql update latest added time: ');
 
       /* delete
-      * delete one latest from June
+      * delete latest added
       */
-      const time7 = await Mongodb.deleteOne(userID, getTime);
-      text += time7('Mongo delete one latest from June time: ');
+      const time7 = await Mongodb.deleteOne(id1, getTime);
+      text += time7('Mongo latest added time: ');
+      const time77 = await Mysqldb.deleteOne(id2, getTime);
+      text += time77('Mysql latest added time: ');
 
       await Mongodb.drop();
+      await Mysqldb.drop();
 
       return text;
 
@@ -87,6 +107,6 @@ async function run() {
 }
 run().then(
   result => console.log(result),
-  error => console.error("Error: " + error)
+  error => console.error("Error: BIG BIG " + error)
 );
 

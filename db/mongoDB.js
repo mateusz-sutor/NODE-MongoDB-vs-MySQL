@@ -111,17 +111,12 @@ const MongoDB = class {
 
         const timeEnd = process.hrtime(timeStart);
         //console.log('ID: ' + id)
-        return {function: callback(timeEnd), id};
+        return [callback(timeEnd), id];
     }
 
-    async update(user_id, callback){
+    async update(id, callback){
         const query = {
-            _id_user: user_id,
-            date: {
-                //delete one from June
-                $gte: new Date(2021,5),
-                $lt: new Date(2021,6),
-            }
+            _id : id
         };
         const updateDoc = {
             $set: {
@@ -130,28 +125,19 @@ const MongoDB = class {
         };
         const timeStart = process.hrtime();
 
-        await this.#collection.updateOne(query, updateDoc, {
-            sort : {date: 1}
-        });
+        await this.#collection.updateOne(query, updateDoc);
 
         const timeEnd = process.hrtime(timeStart);
         return callback(timeEnd);
     }
 
-    async deleteOne(user_id, callback){
+    async deleteOne(id, callback){
         const query = {
-            _id_user: user_id,
-            date: {
-                //delete one from June
-                $gte: new Date(2021,5),
-                $lt: new Date(2021,6),
-            }
+            _id : id
         };
         const timeStart = process.hrtime();
 
-        const result2 = await this.#collection.findOneAndDelete(query, {
-            sort : {date: -1}
-        });
+        const result2 = await this.#collection.findOneAndDelete(query);
         //console.log(result2);
 
         const timeEnd = process.hrtime(timeStart);

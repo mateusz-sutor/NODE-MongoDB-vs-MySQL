@@ -17,7 +17,7 @@ const createEntries = (number_of_users, number_of_entries_by_user) => {
     //create basicEntires array
     const basicEntries = [];
 
-    let date = new Date(2021,4,25);
+    let date = new Date(Date.UTC(2021,4,25));
     for(let i = 0; i < number_of_entries_by_user; i++){
 
     for(let j = 0; j <number_of_users; j++){
