@@ -6,8 +6,17 @@ const Mysqldb = new MysqlDB('localhost', 'root', '', 'mysql-test', 'entries');
 
 const {createEntries: createMongoEntries, document: simpleMongoEntry} = require('./data/mongoEntries');
 const {createEntries: createMysqlEntries, document: simpleMysqlEntry} = require('./data/mysqlEntries');
-const number_of_users = 10;
-const number_of_entries_by_user = 10;
+
+const args = process.argv.slice(2);
+
+const number_of_users = Number(args[0]) ?? 10;
+const number_of_entries_by_user = Number(args[1]) ?? 10;
+
+if(!number_of_entries_by_user || !number_of_users) {
+  console.error('Invalid command line arguments');
+  process.exit(1);
+}
+
 const mongoEntries = createMongoEntries(number_of_users, number_of_entries_by_user);
 const mysqlEntries = createMysqlEntries(number_of_users, number_of_entries_by_user);
 
