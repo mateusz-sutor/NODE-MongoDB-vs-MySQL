@@ -2,7 +2,7 @@
 :boom: Speed comparison between Mongo and MySQL database :dash:
 
 # Introduction
-Below you will see a speed test between MongoDB and MySQL database in node javascript.
+Below you will see a speed test between MongoDB and MySQL(InnoDB engine) database in node javascript.
 This test is based on a simple db data structure that can be used in small projects.
 Queries is only based on few fields: id, user id and date.
 
