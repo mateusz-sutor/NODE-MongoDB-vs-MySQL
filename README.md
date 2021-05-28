@@ -27,14 +27,14 @@ The test result file should be generated in the main directory named output.json
 
 :exclamation: The test can take a long time, for me it lasted 9 hours :scream:
 
-# Speed comparison
+# Speed comparison :checkered_flag:
 
 ## Data structure
 
 Mongo Db:
     Collection of documents:
 
-    ```
+    
 
     {
         _id: ...
@@ -48,7 +48,7 @@ Mongo Db:
         mood: 'good'
     }
 
-    ```
+    
 
 MySql Db:
 
@@ -58,7 +58,7 @@ int | int | datetime | json
 
 
 
-## Graphs
+## Graphs representing the speed test results
 
  ![Selevt latest](charts/select_latest.svg)
 
