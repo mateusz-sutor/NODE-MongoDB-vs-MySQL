@@ -4,7 +4,8 @@
   "description": "Speed comparison between MongoDB and MySQL.",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "zx ./app.mjs",
+    "test": "node test.js 1000",
     "server": "nodemon --delay 2500ms app.js"
   },
   "repository": {
@@ -22,6 +23,7 @@
   },
   "dependencies": {
     "mongodb": "^3.6.6",
-    "mysql2": "^2.2.5"
+    "mysql2": "^2.2.5",
+    "zx": "^1.14.0"
   }
 }
